@@ -11,14 +11,14 @@ sub import {
     my $class = shift;
     return unless scalar @_;
 
-    my $args = ref($_[0]) eq 'HASH' ? $_[0] : (scalar grep {ref $_} @_) ? {@_} : {all => \@_};
+    my $args = ref($_[0]) eq 'HASH' ? $_[0] : (scalar grep {ref $_} @_) ? {@_} : {any => \@_};
 	my $caller = caller;
 
-    for my $func (@{$args->{method} // []}, @{$args->{all} // []}) {
+    for my $func (@{$args->{method} // []}, @{$args->{any} // []}) {
         disable_method_call($caller, $func);
     }
 
-    for my $func (@{$args->{sub} // []}, @{$args->{all} // []}) {
+    for my $func (@{$args->{sub} // []}, @{$args->{any} // []}) {
         disable_named_call($caller, $func);
     }
 }
