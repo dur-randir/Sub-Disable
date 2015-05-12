@@ -28,11 +28,18 @@ __END__
 
 =head1 NAME
 
-Sub::Disable - remove function/method calls from compiled code
+Sub::Disable - remove function/method call from the compiled code
 
 =head1 SYNOPSIS
 
-    use Sub::Disable 'debug';
+    use Sub::Disable 'debug', 'foo', 'bar'; # without specification - both method + sub form calls
+
+    use Sub::Disable method => ['debug'];
+    use Sub::Disable sub    => ['debug'];
+    use Sub::Disable {
+        method => ['foo'],
+        sub    => ['bar'],
+    };
 
     sub debug { warn "DEBUG INFO: @_" }
 
@@ -41,14 +48,33 @@ Sub::Disable - remove function/method calls from compiled code
 
 =head1 DESCRIPTION
 
+This module allows you to turn compile-time resolvable function or method call into no-op (together with
+all arguments computation). This is useful for debugging and/or logging, when you don't want to make 
+your production code slower.
+
+Note that 'compile-time resolvable method call' is a method call on a literal package name
+
+    __PACKAGE__->method
+    # or
+    Some::Package->method
+
+and does not consider inheritance.
+
+L<Sub::Disable> distinguishes between sub and method calls and, by default,
+removes both of them. If you want to remove only one type - use appropriate form of import.
+
 =head1 CAVEATS
 
 L<Sub::Disable> will remove only those sub/method calls that were compiled after
-you use'd L<Sub::Disable>.
+you have use'd it.
 
 If you use L<Sub::Disable> together with L<namespace::clean> and you want to remove
-some function as a 'sub', but not as a 'method', you should use L<Sub::Disable> AFTER
-L<namespace::clean> or exclude that method from cleaning with '-except'.
+some function as a sub call, but not as a method call, you should use L<Sub::Disable> 
+B<after> using L<namespace::clean> or exclude that method with '-except'.
+
+=head1 SEE ALSO
+
+L<B::Hooks::OP::Check> and various OP_check[] related core stuff.
 
 =head1 COPYRIGHT AND LICENSE
 
