@@ -56,6 +56,26 @@ entersub_checker(pTHX_ OP *o) {
     return old_entersub_checker(aTHX_ o);
 }
 
+#ifdef COMPAT_OP_CHECKER
+
+STATIC void
+compat_wrap_op_checker(Optype opcode, Perl_check_t new_checker, Perl_check_t *old_checker_p) {
+#ifdef USE_ITHREADS
+    MUTEX_LOCK(&PL_my_ctx_mutex);
+#endif
+
+    if (!*old_checker_p) {
+        *old_checker_p = PL_check[opcode];
+        PL_check[opcode] = new_checker;
+    }
+
+#ifdef USE_ITHREADS
+    MUTEX_UNLOCK(&PL_my_ctx_mutex);
+#endif
+}
+
+#endif /* COMPAT_OP_CHECKER */
+
 MODULE = Sub::Disable      PACKAGE = Sub::Disable
 PROTOTYPES: DISABLE
 

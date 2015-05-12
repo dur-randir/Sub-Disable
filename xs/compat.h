@@ -17,4 +17,9 @@
 #define gv_init_sv(gv, stash, sv, flags) gv_init(gv, stash, SvPVX(sv), SvLEN(sv), flags | SvUTF8(sv))
 #endif
 
+#ifndef wrap_op_checker
+#define COMPAT_OP_CHECKER
+#define wrap_op_checker compat_wrap_op_checker
+#endif
+
 #endif /* __DISABLE_XS_COMPAT_H_ */
