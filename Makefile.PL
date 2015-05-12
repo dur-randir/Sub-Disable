@@ -7,11 +7,8 @@ WriteMakefile(
     NAME            => 'Sub::Disable',
     VERSION_FROM    => 'lib/Sub/Disable.pm',
     AUTHOR          => ['Sergey Aleynikov <randir@cpan.org>'],
-    PREREQ_PM       => {
-    },
     TEST_REQUIRES   => {
         'Test::More'        => 0,
-        'Test::Exception'   => 0,
     },
     META_MERGE      => {
         resources     => {
