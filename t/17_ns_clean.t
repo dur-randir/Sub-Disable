@@ -1,4 +1,12 @@
 use Test::More;
+
+BEGIN {
+    eval { require namespace::clean; 1 } or do {
+        plan skip_all => 'no namespace::clean - skip';
+        done_testing;
+    };
+}
+
 my $test = 1;
 
 package Bar;
@@ -16,4 +24,3 @@ TODO: {
 }
 
 done_testing;
-
