@@ -13,3 +13,4 @@ t/13_named_existing.t
 t/14_named_predeclared.t
 t/15_all.t
 t/16_method_packages.t
+t/17_ns_clean.t
