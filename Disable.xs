@@ -4,21 +4,7 @@
 #include "perl.h"
 #include "XSUB.h"
 
-#ifndef OpSIBLING
-#define OpSIBLING(o) ((o)->op_sibling)
-#endif
-
-#ifndef cMETHOPx_meth
-#define cMETHOPx_meth cSVOPx_sv
-#endif
-
-#ifndef SvREFCNT_dec_NN
-#define SvREFCNT_dec_NN SvREFCNT_dec
-#endif
-
-#ifndef gv_init_sv
-#define gv_init_sv(gv, stash, sv, flags) gv_init(gv, stash, SvPVX(sv), SvLEN(sv), flags | SvUTF8(sv))
-#endif
+#include "xs/compat.h"
 
 STATIC OP*
 disable_function_checker(pTHX_ OP *op, GV *namegv, SV *ckobj) {
