@@ -6,6 +6,16 @@
 
 #include "xs/compat.h"
 
+#define MY_CXT_KEY "Sub::Disable::_guts" XS_VERSION
+typedef struct {
+#ifdef USE_ITHREADS
+    tTHX owner;
+#endif
+    HV* disabled_methods;
+} my_cxt_t;
+
+START_MY_CXT;
+
 STATIC OP*
 disable_function_checker(pTHX_ OP *op, GV *namegv, SV *ckobj) {
     op_free(op);
@@ -13,11 +23,11 @@ disable_function_checker(pTHX_ OP *op, GV *namegv, SV *ckobj) {
 }
 
 STATIC Perl_check_t old_entersub_checker = 0;
-STATIC HV* disabled_methods;
 
 STATIC OP*
 entersub_checker(pTHX_ OP *o) {
-    if (!HvARRAY(disabled_methods)) goto end;
+    dMY_CXT;
+    if (!HvARRAY(MY_CXT.disabled_methods)) goto end;
 
     OP* kid = cUNOPo->op_first;
     if (!kid || kid->op_type != OP_PUSHMARK) goto end;
@@ -35,7 +45,7 @@ entersub_checker(pTHX_ OP *o) {
     SV* method = cMETHOPx_meth(kid);
     if (!SvPOK(method)) goto end;
 
-    HE* hent = hv_fetch_ent(disabled_methods, package, 0, 0);
+    HE* hent = hv_fetch_ent(MY_CXT.disabled_methods, package, 0, 0);
     if (!hent) goto end;
 
     AV* needles         = (AV*)HeVAL(hent);
@@ -81,9 +91,41 @@ PROTOTYPES: DISABLE
 
 BOOT:
 {
-    disabled_methods = newHV();
+    MY_CXT_INIT;
+    MY_CXT.disabled_methods = newHV();
+#ifdef USE_ITHREADS
+    MY_CXT.owner = aTHX;
+#endif
+
     wrap_op_checker(OP_ENTERSUB, entersub_checker, &old_entersub_checker);
 }
+
+#ifdef USE_ITHREADS
+
+void
+CLONE(...)
+PPCODE:
+{
+    tTHX owner;
+    HV* cloned;
+
+    {
+        dMY_CXT;
+        CLONE_PARAMS params = {NULL, 0, MY_CXT.owner};
+
+        cloned = (HV*)sv_dup_inc((SV*)MY_CXT.disabled_methods, &params);
+    }
+
+    {
+        MY_CXT_CLONE;
+        MY_CXT.owner            = aTHX;
+        MY_CXT.disabled_methods = cloned;
+    }
+
+    XSRETURN_UNDEF;
+}
+
+#endif /* USE_ITHREADS */
 
 void
 disable_cv_call(SV* cv)
@@ -137,6 +179,7 @@ void
 disable_method_call(SV* package, SV* method)
 PPCODE:
 {
+    dMY_CXT;
     SV* shared_method_sv;
 
     if (!SvIsCOW_shared_hash(method)) {
@@ -148,7 +191,7 @@ PPCODE:
         share_hek_hek(SvSHARED_HEK_FROM_PV(SvPVX_const(shared_method_sv)));
     }
 
-    SV** svp = hv_common(disabled_methods, package, NULL, 0, 0, HV_FETCH_LVALUE | HV_FETCH_JUST_SV | HV_FETCH_EMPTY_HE, NULL, 0);
+    SV** svp = hv_common(MY_CXT.disabled_methods, package, NULL, 0, 0, HV_FETCH_LVALUE | HV_FETCH_JUST_SV | HV_FETCH_EMPTY_HE, NULL, 0);
     Perl_av_create_and_push(aTHX_ (AV**)svp, shared_method_sv);
 
     XSRETURN_UNDEF;
