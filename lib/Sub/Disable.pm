@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Sub::Disable - remove function/method call from compiled code
+Sub::Disable - Remove function/method call from compiled code
 
 =head1 SYNOPSIS
 
@@ -61,12 +61,12 @@ Note that 'compile-time resolvable method call' is a method call on a literal pa
 and does not consider inheritance.
 
 L<Sub::Disable> distinguishes between sub and method calls and, by default,
-removes both of them. If you want to remove only one type - use appropriate form of import.
+removes both of them. If you want to remove only one type, you should use specific import.
 
 =head1 PERFORMACE
 
-There's zero runtime overhead. Compile time overhead is negligible - on a test run it took additional
-0.2 ms during compilation for a large-scale project with 1200+ modules loaded.
+There's zero runtime overhead. Compile time overhead is negligible - on a test run it took
+an additional 0.2 ms during compilation of a large-scale project with 1200+ modules loaded.
 
 =head1 CAVEATS
 
@@ -74,7 +74,7 @@ L<Sub::Disable> will remove only those sub/method calls that were compiled after
 you have use'd it.
 
 If you use L<Sub::Disable> together with L<namespace::clean> and you want to remove
-some function as a sub call, but not as a method call, you should use L<Sub::Disable> 
+sub call, but not a method call, of a specific function, you should use L<Sub::Disable> 
 B<after> using L<namespace::clean> or exclude that method with '-except'.
 
 =head1 SEE ALSO

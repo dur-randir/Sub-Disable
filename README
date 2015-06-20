@@ -1,5 +1,5 @@
 NAME
-    Sub::Disable - remove function/method call from compiled code
+    Sub::Disable - Remove function/method call from compiled code
 
 SYNOPSIS
         use Sub::Disable 'debug', 'foo', 'bar'; # without specification - both method + sub form calls
@@ -32,12 +32,12 @@ DESCRIPTION
     and does not consider inheritance.
 
     Sub::Disable distinguishes between sub and method calls and, by default,
-    removes both of them. If you want to remove only one type - use
-    appropriate form of import.
+    removes both of them. If you want to remove only one type, you should
+    use specific import.
 
 PERFORMACE
     There's zero runtime overhead. Compile time overhead is negligible - on
-    a test run it took additional 0.2 ms during compilation for a
+    a test run it took an additional 0.2 ms during compilation of a
     large-scale project with 1200+ modules loaded.
 
 CAVEATS
@@ -45,9 +45,9 @@ CAVEATS
     after you have use'd it.
 
     If you use Sub::Disable together with namespace::clean and you want to
-    remove some function as a sub call, but not as a method call, you should
-    use Sub::Disable after using namespace::clean or exclude that method
-    with '-except'.
+    remove sub call, but not a method call, of a specific function, you
+    should use Sub::Disable after using namespace::clean or exclude that
+    method with '-except'.
 
 SEE ALSO
     B::Hooks::OP::Check and various OP_check[] related core stuff.
