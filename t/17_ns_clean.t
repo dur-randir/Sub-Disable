@@ -1,7 +1,9 @@
 use Test::More;
 
 BEGIN {
-    eval { require namespace::clean; 1 } or do {
+    eval  { require namespace::clean::xs::all; 1 }
+    or do { require namespace::clean; 1 }
+    or do {
         plan skip_all => 'no namespace::clean - skip';
         done_testing;
     };
