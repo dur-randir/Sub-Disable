@@ -191,9 +191,9 @@ PPCODE:
         share_hek_hek(SvSHARED_HEK_FROM_PV(SvPVX_const(shared_method_sv)));
     }
 
-    AV** svp = (AV**)hv_common(MY_CXT.disabled_methods, package, NULL, 0, 0, HV_FETCH_LVALUE | HV_FETCH_JUST_SV | HV_FETCH_EMPTY_HE, NULL, 0);
-    if (!*svp) *svp = newAV();
-    av_push(*svp, shared_method_sv);
+    SV** svp = hv_common(MY_CXT.disabled_methods, package, NULL, 0, 0, HV_FETCH_LVALUE | HV_FETCH_JUST_SV, NULL, 0);
+    if (!SvOK(*svp)) sv_upgrade(*svp, SVt_PVAV);
+    av_push((AV*)*svp, shared_method_sv);
 
     XSRETURN_UNDEF;
 }
