@@ -12,8 +12,10 @@ WriteMakefile(
     },
     META_MERGE      => {
         resources     => {
+            bugtracker => {web => 'https://github.com/dur-randir/Sub-Disable/issues'},
             repository  => 'https://github.com/dur-randir/Sub-Disable',
         },
+        dynamic_config => 0,
     },
     ABSTRACT_FROM   => 'lib/Sub/Disable.pm',
     LICENSE         => 'perl',
@@ -24,4 +26,3 @@ WriteMakefile(
     package MY;
     sub postamble { '$(OBJECT) : xs/compat.h' }
 }
-
