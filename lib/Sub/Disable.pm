@@ -2,7 +2,7 @@ package Sub::Disable;
 use 5.014;
 use strict;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 require XSLoader;
 XSLoader::load('Sub::Disable', $VERSION);

@@ -1,5 +1,8 @@
 Revision history for Sub::Disable.
 
+1.02 Tue Mar 29 21:43:19 MSK 2016
+    - fix tests
+
 1.01 Mon Mar 28 21:51:09 MSK 2016
     - fix compilation on Win32
 
