@@ -12,8 +12,8 @@ WriteMakefile(
     },
     META_MERGE      => {
         resources     => {
-            bugtracker => {web => 'https://github.com/dur-randir/Sub-Disable/issues'},
             repository  => 'https://github.com/dur-randir/Sub-Disable',
+            bugtracker  => 'https://github.com/dur-randir/Sub-Disable/issues',
         },
         dynamic_config => 0,
     },
